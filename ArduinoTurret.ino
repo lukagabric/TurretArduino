@@ -6,8 +6,8 @@ Servo servoHorizontal;
 int servoVerticalPin = 9;
 int servoHorizontalPin = 10;
 
-int x;
-int y;
+int x, prevX;
+int y, prevY;
 
 void setup() { 
     Serial.begin(9600);
@@ -32,12 +32,21 @@ void loop() {
 }
 
 void moveTurret() {
-    int servoX = map(x, 0, 600, 40, 130);
-    int servoY = map(y, 0, 450, 20, 100);
-        
-    servoHorizontal.write(servoX);
-    servoVertical.write(180 - servoY);
-        
-    delay(20);
-}
+    if (prevX != x || prevY != y) {
+        prevX = x;
+        prevY = y;
 
+        int servoX = map(x, 0, 600, 40, 130);
+        int servoY = map(y, 0, 450, 160, 80);
+        
+        servoX = min(servoX, 130);
+        servoX = max(servoX, 40);
+        servoY = min(servoY, 160);
+        servoY = max(servoY, 80);
+        
+        servoHorizontal.write(servoX);
+        servoVertical.write(servoY);
+        
+        delay(20);
+    }
+}
